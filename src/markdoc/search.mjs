@@ -50,11 +50,12 @@ export default function withSearch(nextConfig = {}) {
         test: __filename,
         use: [
           createLoader(function () {
-            let pagesDir = path.resolve('./src/app')
+            let pagesDir = path.resolve('./src/app/[country]')
             this.addContextDependency(pagesDir)
 
             let files = glob.sync('**/page.md', { cwd: pagesDir })
             let data = files.map((file) => {
+              // Générer l'URL relative sans le country code - il sera ajouté côté client
               let url =
                 file === 'page.md' ? '/' : `/${file.replace(/\/page\.md$/, '')}`
               let md = fs.readFileSync(path.join(pagesDir, file), 'utf8')

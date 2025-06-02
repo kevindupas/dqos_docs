@@ -1,5 +1,5 @@
 ---
-title: DQoS Overwiew
+title: DQoS Overview
 ---
 
 ## Introduction
@@ -66,4 +66,4 @@ If you need assistance with DQoS:
 - Contact our technical support team.
 - Submit feedback directly through the app interface.
 
-We’re here to help you make the most of your monitoring capabilities.
+We're here to help you make the most of your monitoring capabilities.

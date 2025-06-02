@@ -2,8 +2,7 @@ export const navigation = [
   {
     title: 'Introduction',
     links: [
-      { title: 'DQoS Overwiew', href: '/' },
-      // { title: 'Installation', href: '/docs/installation' },
+      { title: 'DQoS Overview', href: '/' },
     ],
   },
   {
@@ -101,11 +100,22 @@ export const navigation = [
     links: [
       { title: 'General', href: '/docs/general-settings' },
       { title: 'Map', href: '/docs/map-settings' },
-      { title: 'Kpi\'s', href: '/docs/kpi-settings' },
+      { title: 'KPIs', href: '/docs/kpi-settings' },
       { title: 'Coverage', href: '/docs/coverage-settings' },
       { title: 'Scoring', href: '/docs/scoring-settings' },
-      { title: 'Ri Settings', href: '/docs/ri-settings' },
+      { title: 'RI Settings', href: '/docs/ri-settings' },
       { title: 'Data Source', href: '/docs/data-source-settings' },
     ],
   },
 ]
+
+// Fonction utilitaire pour obtenir les liens de navigation avec le country code
+export function getNavigationWithCountry(country: string) {
+  return navigation.map(section => ({
+    ...section,
+    links: section.links.map(link => ({
+      ...link,
+      href: link.href === '/' ? `/${country}` : `/${country}${link.href}`
+    }))
+  }))
+}

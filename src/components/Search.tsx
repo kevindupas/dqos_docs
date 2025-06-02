@@ -21,7 +21,8 @@ import {
 import { Dialog, DialogPanel } from '@headlessui/react'
 import clsx from 'clsx'
 
-import { navigation } from '@/lib/navigation'
+import { getNavigationWithCountry } from '@/lib/navigation'
+import { useCountry } from '@/contexts/CountryContext'
 import { type Result } from '@/markdoc/search.mjs'
 
 type EmptyObject = Record<string, never>
@@ -48,6 +49,7 @@ function useAutocomplete({
 }) {
   let id = useId()
   let router = useRouter()
+  let { country } = useCountry()
   let [autocompleteState, setAutocompleteState] = useState<
     AutocompleteState<Result> | EmptyObject
   >({})
@@ -57,10 +59,15 @@ function useAutocomplete({
       return
     }
 
-    router.push(itemUrl)
+    // Ajouter le country code à l'URL si elle ne l'a pas déjà
+    const fullUrl = itemUrl.startsWith(`/${country}`)
+      ? itemUrl
+      : `/${country}${itemUrl}`
+
+    router.push(fullUrl)
 
     if (
-      itemUrl ===
+      fullUrl ===
       window.location.pathname + window.location.search + window.location.hash
     ) {
       close(autocomplete)
@@ -95,7 +102,10 @@ function useAutocomplete({
                 return search(query, { limit: 5 })
               },
               getItemUrl({ item }) {
-                return item.url
+                // Ajouter le country code à l'URL
+                return item.url.startsWith(`/${country}`)
+                  ? item.url
+                  : `/${country}${item.url}`
               },
               onSelect: navigate,
             },
@@ -160,9 +170,18 @@ function SearchResult({
   query: string
 }) {
   let id = useId()
+  let { country } = useCountry()
+  const navigation = getNavigationWithCountry(country)
+
+  // Créer l'URL complète avec le country code pour la recherche de section
+  const resultUrlWithCountry = result.url.startsWith(`/${country}`)
+    ? result.url
+    : `/${country}${result.url}`
 
   let sectionTitle = navigation.find((section) =>
-    section.links.find((link) => link.href === result.url.split('#')[0]),
+    section.links.find(
+      (link) => link.href === resultUrlWithCountry.split('#')[0],
+    ),
   )?.title
   let hierarchy = [sectionTitle, result.pageTitle].filter(
     (x): x is string => typeof x === 'string',

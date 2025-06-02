@@ -4,6 +4,7 @@ import yaml from 'js-yaml'
 
 import { DocsLayout } from '@/components/DocsLayout'
 import { Fence } from '@/components/Fence'
+import { CountryImg } from '@/components/CountryImage'
 
 let documentSlugifyMap = new Map()
 
@@ -56,6 +57,16 @@ const nodes = {
       language: {
         type: String,
       },
+    },
+  },
+  // Ajouter le support pour les images markdown standard
+  image: {
+    ...defaultNodes.image,
+    render: CountryImg,
+    attributes: {
+      ...defaultNodes.image.attributes,
+      src: { type: String },
+      alt: { type: String },
     },
   },
 }

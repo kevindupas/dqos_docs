@@ -2,7 +2,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import clsx from 'clsx'
 
-import { navigation } from '@/lib/navigation'
+import { getNavigationWithCountry } from '@/lib/navigation'
+import { useCountry } from '@/contexts/CountryContext'
 
 export function Navigation({
   className,
@@ -12,6 +13,8 @@ export function Navigation({
   onLinkClick?: React.MouseEventHandler<HTMLAnchorElement>
 }) {
   let pathname = usePathname()
+  const { country } = useCountry()
+  const navigation = getNavigationWithCountry(country)
 
   return (
     <nav className={clsx('text-base lg:text-sm', className)}>
