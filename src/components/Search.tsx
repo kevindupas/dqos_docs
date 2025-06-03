@@ -1,3 +1,4 @@
+// src/components/Search.tsx - Version complètement corrigée
 'use client'
 
 import {
@@ -21,8 +22,8 @@ import {
 import { Dialog, DialogPanel } from '@headlessui/react'
 import clsx from 'clsx'
 
-import { getNavigationWithCountry } from '@/lib/navigation'
-import { useCountry } from '@/contexts/CountryContext'
+import { getNavigationWithCountryAndLanguage } from '@/lib/navigation'
+import { useCountryLanguage } from '@/contexts/CountryLanguageContext'
 import { type Result } from '@/markdoc/search.mjs'
 
 type EmptyObject = Record<string, never>
@@ -42,19 +43,27 @@ function SearchIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   )
 }
 
-function cleanUrl(url: string, country: string): string {
-  // Enlever tout [country] ou country existant et remettre le bon
-  let cleanedUrl = url
-    .replace(/^\/\[country\]/, '') // Enlever /[country] du début
-    .replace(/^\/[a-z]{2}(?=\/|$)/, '') // Enlever le country code existant (2 lettres)
-
-  // Si l'URL est vide ou juste "/", retourner juste le country
-  if (!cleanedUrl || cleanedUrl === '/') {
-    return `/${country}`
+function cleanUrl(url: string, country: string, language: string): string {
+  // Si l'URL contient déjà le country et la langue, la retourner telle quelle
+  if (url.startsWith(`/${country}/${language}`)) {
+    return url
   }
 
-  // Ajouter le country code au début
-  return `/${country}${cleanedUrl}`
+  // Si l'URL commence par /[country], remplacer par le vrai country/language
+  if (url.startsWith('/[country]')) {
+    return url.replace('/[country]', `/${country}/${language}`)
+  }
+
+  // Enlever tout autre country code existant au début (pattern: /xx/ ou /xx/yy/)
+  let cleanedUrl = url.replace(/^\/[a-z]{2}(?:\/[a-z]{2})?/, '')
+
+  // Si l'URL est vide, juste "/", ou commence par "#", c'est la page d'accueil
+  if (!cleanedUrl || cleanedUrl === '/' || cleanedUrl.startsWith('#')) {
+    return `/${country}/${language}${cleanedUrl}`
+  }
+
+  // Pour toutes les autres URLs, ajouter le country/language au début
+  return `/${country}/${language}${cleanedUrl.startsWith('/') ? cleanedUrl : '/' + cleanedUrl}`
 }
 
 function useAutocomplete({
@@ -64,7 +73,7 @@ function useAutocomplete({
 }) {
   let id = useId()
   let router = useRouter()
-  let { country } = useCountry()
+  let { country, language } = useCountryLanguage()
   let [autocompleteState, setAutocompleteState] = useState<
     AutocompleteState<Result> | EmptyObject
   >({})
@@ -74,7 +83,7 @@ function useAutocomplete({
       return
     }
 
-    const fullUrl = cleanUrl(itemUrl, country)
+    const fullUrl = cleanUrl(itemUrl, country, language)
     router.push(fullUrl)
 
     if (
@@ -110,10 +119,10 @@ function useAutocomplete({
             {
               sourceId: 'documentation',
               getItems() {
-                return search(query, { limit: 5 })
+                return search(query, { limit: 5 }, language)
               },
               getItemUrl({ item }) {
-                return cleanUrl(item.url, country)
+                return cleanUrl(item.url, country, language)
               },
               onSelect: navigate,
             },
@@ -178,11 +187,11 @@ function SearchResult({
   query: string
 }) {
   let id = useId()
-  let { country } = useCountry()
-  const navigation = getNavigationWithCountry(country)
+  let { country, language } = useCountryLanguage()
+  const navigation = getNavigationWithCountryAndLanguage(country, language)
 
   // Créer l'URL complète avec le country code pour la recherche de section
-  const resultUrlWithCountry = cleanUrl(result.url, country)
+  const resultUrlWithCountry = cleanUrl(result.url, country, language)
 
   let sectionTitle = navigation.find((section) =>
     section.links.find(
@@ -298,12 +307,9 @@ const SearchInput = forwardRef<
             !autocompleteState.isOpen &&
             autocompleteState.query === ''
           ) {
-            // In Safari, closing the dialog with the escape key can sometimes cause the scroll position to jump to the
-            // bottom of the page. This is a workaround for that until we can figure out a proper fix in Headless UI.
             if (document.activeElement instanceof HTMLElement) {
               document.activeElement.blur()
             }
-
             onClose()
           } else {
             inputProps.onKeyDown(event)

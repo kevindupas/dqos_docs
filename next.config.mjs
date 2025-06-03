@@ -1,4 +1,4 @@
-// next.config.mjs (mise à jour)
+// next.config.mjs - Correction
 import withMarkdoc from '@markdoc/next.js'
 import withSearch from './src/markdoc/search.mjs'
 
@@ -6,23 +6,26 @@ import withSearch from './src/markdoc/search.mjs'
 const nextConfig = {
   pageExtensions: ['js', 'jsx', 'md', 'ts', 'tsx'],
   
+  // IMPORTANT: Forcer l'utilisation de la config Markdoc
+  experimental: {
+    mdxRs: false, // Désactiver MDX par défaut
+  },
+
   // Gérer les redirections pour les anciennes URLs
   async redirects() {
-    // Configuration des langues par défaut pour chaque pays
     const countryDefaultLanguages = {
-      'zw': 'en',  // Zimbabwe -> Anglais
-      'sz': 'en',  // Eswatini -> Anglais  
-      'ga': 'fr',  // Gabon -> Français
-      'bw': 'en',  // Botswana -> Anglais
-      'gm': 'en',  // Gambie -> Anglais
-      'zm': 'en',  // Zambie -> Anglais
-      'mz': 'en',  // Mozambique -> Anglais
-      'bi': 'fr',  // Burundi -> Français
+      'zw': 'en',
+      'sz': 'en',
+      'ga': 'fr',
+      'bw': 'en',
+      'gm': 'en',
+      'zm': 'en',
+      'mz': 'en',
+      'bi': 'fr',
     };
 
     const redirects = [];
 
-    // Redirection de /:country vers /:country/:defaultLang
     Object.entries(countryDefaultLanguages).forEach(([country, defaultLang]) => {
       redirects.push({
         source: `/${country}`,
@@ -31,7 +34,6 @@ const nextConfig = {
       });
     });
 
-    // Redirection de /:country/docs/* vers /:country/:defaultLang/docs/*
     Object.entries(countryDefaultLanguages).forEach(([country, defaultLang]) => {
       redirects.push({
         source: `/${country}/docs/:path*`,
@@ -43,11 +45,9 @@ const nextConfig = {
     return redirects;
   },
 
-  // Gérer les rewrites pour une meilleure compatibilité
   async rewrites() {
     return {
       beforeFiles: [
-        // Permettre l'accès direct aux images par pays
         {
           source: '/images/:country/:path*',
           destination: '/images/:country/:path*',
@@ -56,7 +56,6 @@ const nextConfig = {
     };
   },
 
-  // Configuration des headers pour le SEO multilingue
   async headers() {
     return [
       {
@@ -72,6 +71,10 @@ const nextConfig = {
   },
 }
 
+// IMPORTANT: L'ordre compte ici !
 export default withSearch(
-  withMarkdoc({ schemaPath: './src/markdoc' })(nextConfig),
+  withMarkdoc({ 
+    schemaPath: './src/markdoc',
+    mode: 'static' // Force le mode statique
+  })(nextConfig),
 )

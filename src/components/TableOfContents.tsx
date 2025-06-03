@@ -1,3 +1,4 @@
+// src/components/TableOfContents.tsx - Fichier complet corrigé
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
@@ -34,7 +35,9 @@ export function TableOfContents({
     let headings = getHeadings(tableOfContents)
     function onScroll() {
       let top = window.scrollY
-      let current = headings[0].id
+      let current = headings[0]?.id // Fix ici
+      if (!current) return // Fix ici
+
       for (let heading of headings) {
         if (top >= heading.top - 10) {
           current = heading.id

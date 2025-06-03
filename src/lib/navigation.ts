@@ -1,3 +1,4 @@
+// src/lib/navigation.ts - Version corrigée
 export const navigation = [
   {
     title: 'Introduction',
@@ -59,62 +60,67 @@ export const navigation = [
     title: 'User Feedback',
     titleFr: 'Feedback utilisateur',
     links: [
-      { title: 'Dashboard Application Installation', href: '/docs/dashboard-application-installation' },
-      { title: 'User Complaints', href: '/docs/user-complaints' },
-      { title: 'Follow Up Complaints', href: '/docs/follow-up-complaints' },
-      { title: 'Surveys', href: '/docs/surveys' },
-      { title: 'Notifications', href: '/docs/notifications' },
-      { title: 'Imports Page', href: '/docs/imports-page' },
-      { title: 'Location Manager', href: '/docs/location-manager' },
-      { title: 'Translation Manager', href: '/docs/translation-manager' },
-      { title: 'FAQ Manager', href: '/docs/faq-manager' },
+      { title: 'Dashboard Application Installation', titleFr: 'Installation Application Tableau de Bord', href: '/docs/dashboard-application-installation' },
+      { title: 'User Complaints', titleFr: 'Plaintes Utilisateurs', href: '/docs/user-complaints' },
+      { title: 'Follow Up Complaints', titleFr: 'Suivi des Plaintes', href: '/docs/follow-up-complaints' },
+      { title: 'Surveys', titleFr: 'Enquêtes', href: '/docs/surveys' },
+      { title: 'Notifications', titleFr: 'Notifications', href: '/docs/notifications' },
+      { title: 'Imports Page', titleFr: 'Page d\'Imports', href: '/docs/imports-page' },
+      { title: 'Location Manager', titleFr: 'Gestionnaire de Localisation', href: '/docs/location-manager' },
+      { title: 'Translation Manager', titleFr: 'Gestionnaire de Traduction', href: '/docs/translation-manager' },
+      { title: 'FAQ Manager', titleFr: 'Gestionnaire FAQ', href: '/docs/faq-manager' },
     ],
   },
   {
     title: 'Reporting Builder',
+    titleFr: 'Générateur de Rapports',
     links: [
-      { title: 'Generate Template', href: '/docs/generate-template' },
-      { title: 'Generate campaign', href: '/docs/generate-campaign' },
-      { title: 'Architecture guide', href: '/docs/architecture-guide' },
-      { title: 'Export Report', href: '/docs/export-report' },
+      { title: 'Generate Template', titleFr: 'Générer un Modèle', href: '/docs/generate-template' },
+      { title: 'Generate campaign', titleFr: 'Générer une Campagne', href: '/docs/generate-campaign' },
+      { title: 'Architecture guide', titleFr: 'Guide d\'Architecture', href: '/docs/architecture-guide' },
+      { title: 'Export Report', titleFr: 'Exporter un Rapport', href: '/docs/export-report' },
     ],
   },
   {
     title: 'Support tickets',
+    titleFr: 'Tickets de Support',
     links: [
-      { title: 'Ticket Management', href: '/docs/ticket-management' },
-      { title: 'Ticket Creation', href: '/docs/ticket-creation' },
-      { title: 'Ticket Tracking', href: '/docs/ticket-tracking' },
-      { title: 'Ticket Email Notifications', href: '/docs/ticket-email-notifications' },
+      { title: 'Ticket Management', titleFr: 'Gestion des Tickets', href: '/docs/ticket-management' },
+      { title: 'Ticket Creation', titleFr: 'Création de Tickets', href: '/docs/ticket-creation' },
+      { title: 'Ticket Tracking', titleFr: 'Suivi des Tickets', href: '/docs/ticket-tracking' },
+      { title: 'Ticket Email Notifications', titleFr: 'Notifications Email des Tickets', href: '/docs/ticket-email-notifications' },
     ],
   },
   {
     title: 'Data Management',
+    titleFr: 'Gestion des Données',
     links: [
-      { title: 'Topology Update Assistant', href: '/docs/topology-update-assistant' },
-      { title: 'Operator Management', href: '/docs/operator-management' },
-      { title: 'Problem Management', href: '/docs/problem-management' },
-      { title: 'Notification Manager', href: '/docs/notification-manager' },
+      { title: 'Topology Update Assistant', titleFr: 'Assistant de Mise à Jour Topologique', href: '/docs/topology-update-assistant' },
+      { title: 'Operator Management', titleFr: 'Gestion des Opérateurs', href: '/docs/operator-management' },
+      { title: 'Problem Management', titleFr: 'Gestion des Problèmes', href: '/docs/problem-management' },
+      { title: 'Notification Manager', titleFr: 'Gestionnaire de Notifications', href: '/docs/notification-manager' },
     ],
   },
   {
     title: 'User Management',
+    titleFr: 'Gestion des Utilisateurs',
     links: [
-      { title: 'Roles', href: '/docs/roles' },
-      { title: 'Permissions', href: '/docs/permissions' },
-      { title: 'Users', href: '/docs/users' },
+      { title: 'Roles', titleFr: 'Rôles', href: '/docs/roles' },
+      { title: 'Permissions', titleFr: 'Permissions', href: '/docs/permissions' },
+      { title: 'Users', titleFr: 'Utilisateurs', href: '/docs/users' },
     ],
   },
   {
     title: 'Settings',
+    titleFr: 'Paramètres',
     links: [
-      { title: 'General', href: '/docs/general-settings' },
-      { title: 'Map', href: '/docs/map-settings' },
-      { title: 'KPIs', href: '/docs/kpi-settings' },
-      { title: 'Coverage', href: '/docs/coverage-settings' },
-      { title: 'Scoring', href: '/docs/scoring-settings' },
-      { title: 'RI Settings', href: '/docs/ri-settings' },
-      { title: 'Data Source', href: '/docs/data-source-settings' },
+      { title: 'General', titleFr: 'Général', href: '/docs/general-settings' },
+      { title: 'Map', titleFr: 'Carte', href: '/docs/map-settings' },
+      { title: 'KPIs', titleFr: 'KPIs', href: '/docs/kpi-settings' },
+      { title: 'Coverage', titleFr: 'Couverture', href: '/docs/coverage-settings' },
+      { title: 'Scoring', titleFr: 'Notation', href: '/docs/scoring-settings' },
+      { title: 'RI Settings', titleFr: 'Paramètres RI', href: '/docs/ri-settings' },
+      { title: 'Data Source', titleFr: 'Source de Données', href: '/docs/data-source-settings' },
     ],
   },
 ]
@@ -126,7 +132,7 @@ export function getNavigationWithCountryAndLanguage(country: string, language: s
     title: language === 'fr' ? (section.titleFr || section.title) : section.title,
     links: section.links.map(link => ({
       ...link,
-      title: language === 'fr' ? (link.titleFr || link.title) : link.title,
+      title: language === 'fr' ? ((link as any).titleFr || link.title) : link.title,
       href: link.href === '/' ? `/${country}/${language}` : `/${country}/${language}${link.href}`
     }))
   }))

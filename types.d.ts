@@ -7,5 +7,9 @@ declare module '@/markdoc/search.mjs' {
     pageTitle?: string
   }
 
-  export function search(query: string, options?: SearchOptions): Array<Result>
+  export function search(
+    query: string,
+    options?: SearchOptions,
+    language?: string
+  ): Array<r>
 }

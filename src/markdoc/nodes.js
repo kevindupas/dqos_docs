@@ -1,3 +1,4 @@
+// src/markdoc/nodes.js - Version corrigée
 import { nodes as defaultNodes, Tag } from '@markdoc/markdoc'
 import { slugifyWithCounter } from '@sindresorhus/slugify'
 import yaml from 'js-yaml'
@@ -59,14 +60,13 @@ const nodes = {
       },
     },
   },
-  // Ajouter le support pour les images markdown standard
+  // CORRECTION ICI : Force l'utilisation du composant CountryImg
   image: {
-    ...defaultNodes.image,
-    render: CountryImg,
+    render: CountryImg, // Force l'utilisation de notre composant
     attributes: {
-      ...defaultNodes.image.attributes,
-      src: { type: String },
-      alt: { type: String },
+      src: { type: String, required: true },
+      alt: { type: String, required: true },
+      title: { type: String },
     },
   },
 }
