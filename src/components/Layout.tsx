@@ -1,3 +1,4 @@
+// src/components/Layout.tsx (mise à jour)
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -9,13 +10,13 @@ import { MobileNavigation } from '@/components/MobileNavigation'
 import { Navigation } from '@/components/Navigation'
 import { Search } from '@/components/Search'
 import { ThemeSelector } from '@/components/ThemeSelector'
-import { useCountry } from '@/contexts/CountryContext'
+import { useCountryLanguage } from '@/contexts/CountryLanguageContext'
 import dqosLogo from '@/images/dqos-logo_white.png'
 import Image from 'next/image'
 
 function Header() {
   let [isScrolled, setIsScrolled] = useState(false)
-  const { country } = useCountry()
+  const { country, language } = useCountryLanguage()
 
   useEffect(() => {
     function onScroll() {
@@ -41,7 +42,7 @@ function Header() {
         <MobileNavigation />
       </div>
       <div className="relative flex grow basis-0 items-center">
-        <Link href={`/${country}`} aria-label="Home page">
+        <Link href={`/${country}/${language}`} aria-label="Home page">
           <Image
             src={dqosLogo}
             alt="DQoS"
@@ -53,6 +54,8 @@ function Header() {
         <Search />
       </div>
       <div className="relative flex basis-0 justify-end gap-6 sm:gap-8 md:grow">
+        {/* Sélecteur de langue */}
+        <LanguageSelector />
         <ThemeSelector className="relative z-10" />
         <Link
           href="https://github.com"
@@ -64,16 +67,60 @@ function Header() {
   )
 }
 
+function LanguageSelector() {
+  const { country, language } = useCountryLanguage()
+  const pathname = usePathname()
+
+  // Créer les URLs pour changer de langue
+  const toggleLanguage = () => {
+    const newLang = language === 'en' ? 'fr' : 'en'
+    const newPath = pathname.replace(
+      `/${country}/${language}`,
+      `/${country}/${newLang}`,
+    )
+    return newPath
+  }
+
+  // Vérifier si le pays supporte plusieurs langues
+  const countryLanguages: Record<string, string[]> = {
+    zw: ['en'],
+    sz: ['en'],
+    ga: ['fr'],
+    bw: ['en'],
+    gm: ['en'],
+    zm: ['en'],
+    mz: ['en'],
+    bi: ['fr'],
+  }
+
+  const supportedLangs = countryLanguages[country] || ['en']
+  const showLanguageSelector = supportedLangs.length > 1
+
+  if (!showLanguageSelector) {
+    return null
+  }
+
+  return (
+    <Link
+      href={toggleLanguage()}
+      className="flex h-6 w-6 items-center justify-center rounded-lg shadow-md ring-1 shadow-black/5 ring-black/5 dark:bg-slate-700 dark:ring-white/5 dark:ring-inset"
+      aria-label={`Switch to ${language === 'en' ? 'French' : 'English'}`}
+    >
+      <span className="text-xs font-medium text-slate-900 dark:text-white">
+        {language.toUpperCase()}
+      </span>
+    </Link>
+  )
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
   let pathname = usePathname()
-  const { country } = useCountry()
-  let isHomePage = pathname === `/${country}`
+  const { country, language } = useCountryLanguage()
+  let isHomePage = pathname === `/${country}/${language}`
 
   return (
     <div className="flex w-full flex-col">
       <Header />
-
-      {/* {isHomePage && <Hero />} */}
 
       <div className="relative mx-auto flex w-full max-w-8xl flex-auto justify-center sm:px-2 lg:px-8 xl:px-12">
         <div className="hidden lg:relative lg:block lg:flex-none">

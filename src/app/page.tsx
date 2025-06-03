@@ -1,16 +1,65 @@
+// src/app/page.tsx (mise à jour)
 import Link from 'next/link'
 import Image from 'next/image'
 import dqosLogo from '@/images/dqos-logo_white.png'
 
 const countries = [
-  { code: 'zw', name: 'Zimbabwe', flag: '🇿🇼' },
-  { code: 'sz', name: 'Eswatini', flag: '🇸🇿' },
-  { code: 'ga', name: 'Gabon', flag: '🇬🇦' },
-  { code: 'bw', name: 'Botswana', flag: '🇧🇼' },
-  { code: 'gm', name: 'Gambia', flag: '🇬🇲' },
-  { code: 'zm', name: 'Zambia', flag: '🇿🇲' },
-  { code: 'mz', name: 'Mozambique', flag: '🇲🇿' },
-  { code: 'bi', name: 'Burundi', flag: '🇧🇮' },
+  {
+    code: 'zw',
+    name: 'Zimbabwe',
+    flag: '🇿🇼',
+    languages: ['en'],
+    defaultLang: 'en',
+  },
+  {
+    code: 'sz',
+    name: 'Eswatini',
+    flag: '🇸🇿',
+    languages: ['en'],
+    defaultLang: 'en',
+  },
+  {
+    code: 'ga',
+    name: 'Gabon',
+    flag: '🇬🇦',
+    languages: ['fr'],
+    defaultLang: 'fr',
+  },
+  {
+    code: 'bw',
+    name: 'Botswana',
+    flag: '🇧🇼',
+    languages: ['en'],
+    defaultLang: 'en',
+  },
+  {
+    code: 'gm',
+    name: 'Gambia',
+    flag: '🇬🇲',
+    languages: ['en'],
+    defaultLang: 'en',
+  },
+  {
+    code: 'zm',
+    name: 'Zambia',
+    flag: '🇿🇲',
+    languages: ['en'],
+    defaultLang: 'en',
+  },
+  {
+    code: 'mz',
+    name: 'Mozambique',
+    flag: '🇲🇿',
+    languages: ['en'],
+    defaultLang: 'en',
+  },
+  {
+    code: 'bi',
+    name: 'Burundi',
+    flag: '🇧🇮',
+    languages: ['fr'],
+    defaultLang: 'fr',
+  },
 ]
 
 export default function CountrySelectPage() {
@@ -35,7 +84,7 @@ export default function CountrySelectPage() {
           {countries.map((country) => (
             <Link
               key={country.code}
-              href={`/${country.code}`}
+              href={`/${country.code}/${country.defaultLang}`}
               className="group block transform rounded-xl border border-slate-200 bg-white p-6 shadow-md transition-all duration-200 hover:scale-105 hover:border-sky-300 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:hover:border-sky-600"
             >
               <div className="flex flex-col items-center space-y-3 text-center">
@@ -46,6 +95,11 @@ export default function CountrySelectPage() {
                   <h3 className="text-lg font-semibold text-slate-900 transition-colors group-hover:text-sky-600 dark:text-white dark:group-hover:text-sky-400">
                     {country.name}
                   </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    {country.languages
+                      .map((lang) => lang.toUpperCase())
+                      .join(', ')}
+                  </p>
                 </div>
               </div>
             </Link>

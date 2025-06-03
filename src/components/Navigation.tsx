@@ -1,9 +1,10 @@
+// src/components/Navigation.tsx (mise à jour)
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import clsx from 'clsx'
 
-import { getNavigationWithCountry } from '@/lib/navigation'
-import { useCountry } from '@/contexts/CountryContext'
+import { getNavigationWithCountryAndLanguage } from '@/lib/navigation'
+import { useCountryLanguage } from '@/contexts/CountryLanguageContext'
 
 export function Navigation({
   className,
@@ -13,8 +14,8 @@ export function Navigation({
   onLinkClick?: React.MouseEventHandler<HTMLAnchorElement>
 }) {
   let pathname = usePathname()
-  const { country } = useCountry()
-  const navigation = getNavigationWithCountry(country)
+  const { country, language } = useCountryLanguage()
+  const navigation = getNavigationWithCountryAndLanguage(country, language)
 
   return (
     <nav className={clsx('text-base lg:text-sm', className)}>

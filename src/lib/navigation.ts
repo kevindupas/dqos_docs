@@ -1,53 +1,63 @@
 export const navigation = [
   {
     title: 'Introduction',
+    titleFr: 'Introduction',
     links: [
-      { title: 'DQoS Overview', href: '/' },
+      { title: 'DQoS Overview', titleFr: 'Aperçu DQoS', href: '/' },
     ],
   },
   {
     title: 'Login',
+    titleFr: 'Connexion',
     links: [
-      { title: 'Login', href: '/docs/login' },
+      { title: 'Login', titleFr: 'Connexion', href: '/docs/login' },
       {
         title: 'Reset Password',
+        titleFr: 'Réinitialiser le mot de passe',
         href: '/docs/reset-password',
       },
-      { title: 'User Profile', href: '/docs/user-profile' },
+      { title: 'User Profile', titleFr: 'Profil utilisateur', href: '/docs/user-profile' },
       {
         title: 'Two-Factor Authentication',
+        titleFr: 'Authentification à deux facteurs',
         href: '/docs/two-factor-authentication',
       },
     ],
   },
   {
     title: 'NMS Views',
+    titleFr: 'Vues NMS',
     links: [
-      { title: 'PM Data Availability', href: '/docs/pm-data-availability' },
-      { title: 'RI Capture Duration', href: '/docs/ri-capture-duration' },
-      { title: 'NMS Summary', href: '/docs/nms-summary' },
-      { title: 'NMS Details', href: '/docs/nms-details' },
-      { title: 'NMS Benchmark', href: '/docs/nms-benchmark' },
+      { title: 'PM Data Availability', titleFr: 'Disponibilité des données PM', href: '/docs/pm-data-availability' },
+      { title: 'RI Capture Duration', titleFr: 'Durée de capture RI', href: '/docs/ri-capture-duration' },
+      { title: 'NMS Summary', titleFr: 'Résumé NMS', href: '/docs/nms-summary' },
+      { title: 'NMS Details', titleFr: 'Détails NMS', href: '/docs/nms-details' },
+      { title: 'NMS Benchmark', titleFr: 'Benchmark NMS', href: '/docs/nms-benchmark' },
       {
         title: 'Scoring',
+        titleFr: 'Notation',
         href: '/docs/scoring',
       },
       {
         title: 'Ranking',
+        titleFr: 'Classement',
         href: '/docs/ranking',
       },
       {
         title: 'Coverage VS QoS',
+        titleFr: 'Couverture VS QoS',
         href: '/docs/coverage-vs-qos',
       },
       {
         title: 'Antennas Map',
+        titleFr: 'Carte des antennes',
         href: '/docs/antennas-map',
       },
     ],
   },
   {
     title: 'User Feedback',
+    titleFr: 'Feedback utilisateur',
     links: [
       { title: 'Dashboard Application Installation', href: '/docs/dashboard-application-installation' },
       { title: 'User Complaints', href: '/docs/user-complaints' },
@@ -109,13 +119,20 @@ export const navigation = [
   },
 ]
 
-// Fonction utilitaire pour obtenir les liens de navigation avec le country code
-export function getNavigationWithCountry(country: string) {
+// Fonction utilitaire pour obtenir les liens de navigation avec le country code et la langue
+export function getNavigationWithCountryAndLanguage(country: string, language: string) {
   return navigation.map(section => ({
     ...section,
+    title: language === 'fr' ? (section.titleFr || section.title) : section.title,
     links: section.links.map(link => ({
       ...link,
-      href: link.href === '/' ? `/${country}` : `/${country}${link.href}`
+      title: language === 'fr' ? (link.titleFr || link.title) : link.title,
+      href: link.href === '/' ? `/${country}/${language}` : `/${country}/${language}${link.href}`
     }))
   }))
+}
+
+// Garder l'ancienne fonction pour la compatibilité (deprecated)
+export function getNavigationWithCountry(country: string) {
+  return getNavigationWithCountryAndLanguage(country, 'en')
 }

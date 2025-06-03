@@ -1,3 +1,4 @@
+// src/markdoc/search.mjs (mise à jour)
 import Markdoc from '@markdoc/markdoc'
 import { slugifyWithCounter } from '@sindresorhus/slugify'
 import glob from 'fast-glob'
@@ -50,14 +51,23 @@ export default function withSearch(nextConfig = {}) {
         test: __filename,
         use: [
           createLoader(function () {
-            let pagesDir = path.resolve('./src/app/[country]')
+            let pagesDir = path.resolve('./src/app/[country]/[lang]')
             this.addContextDependency(pagesDir)
 
-            let files = glob.sync('**/page.md', { cwd: pagesDir })
-            let data = files.map((file) => {
-              // Générer l'URL relative sans le country code - il sera ajouté côté client
-              let url =
-                file === 'page.md' ? '/' : `/${file.replace(/\/page\.md$/, '')}`
+            // Chercher tous les fichiers page.*.md dans tous les dossiers
+            let files = glob.sync('**/page.*.md', { cwd: pagesDir })
+            let data = {}
+
+            files.forEach((file) => {
+              // Extraire la langue du nom de fichier (page.en.md -> en, page.fr.md -> fr)
+              let langMatch = file.match(/page\.([a-z]{2})\.md$/)
+              if (!langMatch) return
+
+              let lang = langMatch[1]
+              let url = file === `page.${lang}.md` 
+                ? '/' 
+                : `/${file.replace(`/page.${lang}.md`, '')}`
+              
               let md = fs.readFileSync(path.join(pagesDir, file), 'utf8')
 
               let sections
@@ -75,7 +85,11 @@ export default function withSearch(nextConfig = {}) {
                 cache.set(file, [md, sections])
               }
 
-              return { url, sections }
+              // Organiser les données par langue
+              if (!data[lang]) {
+                data[lang] = []
+              }
+              data[lang].push({ url, sections })
             })
 
             // When this file is imported within the application
@@ -83,35 +97,44 @@ export default function withSearch(nextConfig = {}) {
             return `
               import FlexSearch from 'flexsearch'
 
-              let sectionIndex = new FlexSearch.Document({
-                tokenize: 'full',
-                document: {
-                  id: 'url',
-                  index: 'content',
-                  store: ['title', 'pageTitle'],
-                },
-                context: {
-                  resolution: 9,
-                  depth: 2,
-                  bidirectional: true
+              let sectionIndexes = {}
+              let allData = ${JSON.stringify(data)}
+
+              // Créer un index de recherche pour chaque langue
+              Object.keys(allData).forEach(lang => {
+                sectionIndexes[lang] = new FlexSearch.Document({
+                  tokenize: 'full',
+                  document: {
+                    id: 'url',
+                    index: 'content',
+                    store: ['title', 'pageTitle'],
+                  },
+                  context: {
+                    resolution: 9,
+                    depth: 2,
+                    bidirectional: true
+                  }
+                })
+
+                for (let { url, sections } of allData[lang]) {
+                  for (let [title, hash, content] of sections) {
+                    sectionIndexes[lang].add({
+                      url: url + (hash ? ('#' + hash) : ''),
+                      title,
+                      content: [title, ...content].join('\\n'),
+                      pageTitle: hash ? sections[0][0] : undefined,
+                    })
+                  }
                 }
               })
 
-              let data = ${JSON.stringify(data)}
-
-              for (let { url, sections } of data) {
-                for (let [title, hash, content] of sections) {
-                  sectionIndex.add({
-                    url: url + (hash ? ('#' + hash) : ''),
-                    title,
-                    content: [title, ...content].join('\\n'),
-                    pageTitle: hash ? sections[0][0] : undefined,
-                  })
+              export function search(query, options = {}, language = 'en') {
+                let index = sectionIndexes[language]
+                if (!index) {
+                  return []
                 }
-              }
-
-              export function search(query, options = {}) {
-                let result = sectionIndex.search(query, {
+                
+                let result = index.search(query, {
                   ...options,
                   enrich: true,
                 })
