@@ -42,6 +42,21 @@ function SearchIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   )
 }
 
+function cleanUrl(url: string, country: string): string {
+  // Enlever tout [country] ou country existant et remettre le bon
+  let cleanedUrl = url
+    .replace(/^\/\[country\]/, '') // Enlever /[country] du début
+    .replace(/^\/[a-z]{2}(?=\/|$)/, '') // Enlever le country code existant (2 lettres)
+
+  // Si l'URL est vide ou juste "/", retourner juste le country
+  if (!cleanedUrl || cleanedUrl === '/') {
+    return `/${country}`
+  }
+
+  // Ajouter le country code au début
+  return `/${country}${cleanedUrl}`
+}
+
 function useAutocomplete({
   close,
 }: {
@@ -59,11 +74,7 @@ function useAutocomplete({
       return
     }
 
-    // Ajouter le country code à l'URL si elle ne l'a pas déjà
-    const fullUrl = itemUrl.startsWith(`/${country}`)
-      ? itemUrl
-      : `/${country}${itemUrl}`
-
+    const fullUrl = cleanUrl(itemUrl, country)
     router.push(fullUrl)
 
     if (
@@ -102,10 +113,7 @@ function useAutocomplete({
                 return search(query, { limit: 5 })
               },
               getItemUrl({ item }) {
-                // Ajouter le country code à l'URL
-                return item.url.startsWith(`/${country}`)
-                  ? item.url
-                  : `/${country}${item.url}`
+                return cleanUrl(item.url, country)
               },
               onSelect: navigate,
             },
@@ -174,9 +182,7 @@ function SearchResult({
   const navigation = getNavigationWithCountry(country)
 
   // Créer l'URL complète avec le country code pour la recherche de section
-  const resultUrlWithCountry = result.url.startsWith(`/${country}`)
-    ? result.url
-    : `/${country}${result.url}`
+  const resultUrlWithCountry = cleanUrl(result.url, country)
 
   let sectionTitle = navigation.find((section) =>
     section.links.find(

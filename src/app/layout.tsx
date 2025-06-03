@@ -2,13 +2,10 @@ import { type Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import localFont from 'next/font/local'
 import clsx from 'clsx'
-import { notFound } from 'next/navigation'
 
 import { Providers } from '@/app/providers'
-import { Layout } from '@/components/Layout'
 
 import '@/styles/tailwind.css'
-import { CountryProvider } from '@/contexts/CountryContext'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -16,35 +13,26 @@ const inter = Inter({
   variable: '--font-inter',
 })
 
+// Use local version of Lexend so that we can use OpenType features
 const lexend = localFont({
-  src: '../../fonts/lexend.woff2',
+  src: '../fonts/lexend.woff2',
   display: 'swap',
   variable: '--font-lexend',
 })
 
-// Liste des country codes supportés
-const supportedCountries = ['zw', 'sz', 'ga', 'bw', 'gm', 'zm', 'mz', 'bi']
-
 export const metadata: Metadata = {
   title: {
-    template: '%s - Docs',
-    default: 'DQoS - Never miss the cache again.',
+    template: '%s - DQoS',
+    default: 'DQoS - Quality of Service Monitoring',
   },
   description: 'Quality of Service monitoring solution for mobile networks.',
 }
 
-export default function CountryLayout({
+export default function RootLayout({
   children,
-  params,
 }: {
   children: React.ReactNode
-  params: { country: string }
 }) {
-  // Vérifier si le country code est supporté
-  if (!supportedCountries.includes(params.country)) {
-    notFound()
-  }
-
   return (
     <html
       lang="en"
@@ -52,11 +40,7 @@ export default function CountryLayout({
       suppressHydrationWarning
     >
       <body className="flex min-h-full bg-white dark:bg-slate-900">
-        <Providers>
-          <CountryProvider country={params.country}>
-            <Layout>{children}</Layout>
-          </CountryProvider>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

@@ -5,8 +5,10 @@ import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { Dialog, DialogPanel } from '@headlessui/react'
 
-import { Logomark } from '@/components/Logo'
 import { Navigation } from '@/components/Navigation'
+import { useCountry } from '@/contexts/CountryContext'
+import dqosLogo from '@/images/dqos-logo_white.png'
+import Image from 'next/image'
 
 function MenuIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -52,6 +54,7 @@ function CloseOnNavigation({ close }: { close: () => void }) {
 export function MobileNavigation() {
   let [isOpen, setIsOpen] = useState(false)
   let close = useCallback(() => setIsOpen(false), [setIsOpen])
+  const { country } = useCountry()
 
   function onLinkClick(event: React.MouseEvent<HTMLAnchorElement>) {
     let link = event.currentTarget
@@ -91,8 +94,8 @@ export function MobileNavigation() {
             >
               <CloseIcon className="h-6 w-6 stroke-slate-500" />
             </button>
-            <Link href="/" className="ml-6" aria-label="Home page">
-              <Logomark className="h-9 w-9" />
+            <Link href={`/${country}`} className="ml-6" aria-label="Home page">
+              <Image src={dqosLogo} alt="DQoS" className="h-9 w-auto" />
             </Link>
           </div>
           <Navigation className="mt-5 px-1" onLinkClick={onLinkClick} />
